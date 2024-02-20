@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../components/sidebar';
-import { Circles, CirclesWithBar, ThreeDots } from 'react-loader-spinner';
+import { Circles, CirclesWithBar, RotatingLines, ThreeDots } from 'react-loader-spinner';
 import { effect, signal, useSignal } from '@preact/signals-react';
 import { useSignals } from '@preact/signals-react/runtime';
 import AuthDialog from '../components/authDialog';
 import { ReceiveBubble } from '../components/receiveBubble';
-import { chatClear, chatIsWaitingForResponse, chatLoadingMessageId, chatReceiveChatMessage, chatSessionId, chatSessions, isGuestUser, showAuthModal, userChatsCount } from '../state/chatState';
+import { chatClear, chatIsWaitingForResponse, chatLoadingMessageId, chatReceiveChatMessage, chatSessionId, chatSessions, isGuestUser, showAuthModal, subscriptionActive, userChatsCount } from '../state/chatState';
 import { customFetchRequest } from '../utils/customRequest';
 import ChatLimtExhausted from '../components/chatLimitExhaustCard';
 
@@ -17,10 +17,11 @@ const ChatScreen = () => {
     const [inputText, setInputText] = useState('');
     const [isShowExhaustCard, setIsShowExhaustCard] = useState(false);
     const [isShowWelcomeMessage, setIsShowWelcomeMessage] = useState(true);
+    const [isLoadingSessionChat, setIsLoadingSessionChat] = useState(false);
 
     const handleSendMessage = () => {
 
-        if (isGuestUser.value && userChatsCount.value >= 10) {
+        if (isGuestUser.value && userChatsCount.value >= 10 && !subscriptionActive.value) {
             setIsShowExhaustCard(true);
             setIsShowWelcomeMessage(false);
             return;
@@ -31,9 +32,9 @@ const ChatScreen = () => {
             if (messages.length === 0) {
                 startChatSession(inputText)
 
-                const sessionObj = new Object();
-                sessionObj[chatSessionId.value] = inputText;
-                chatSessions.value = [...chatSessions.value, sessionObj]
+                // const sessionObj = new Object();
+                // sessionObj[chatSessionId.value] = inputText;
+                chatSessions.value[chatSessionId.value] = inputText
             }
 
             setMessages(prev => [...prev, { text: inputText, sender: 'user', type: "send" }]);
@@ -72,24 +73,27 @@ const ChatScreen = () => {
 
     const getSessionChats = () => {
         setMessages([]);
+        setIsLoadingSessionChat(true);
         if (chatSessionId) {
             customFetchRequest(`session-chats?sessionId=${chatSessionId.value}`, 'GET').then((res) => {
                 res.forEach(chat => {
                     setMessages(prev => [...prev, { text: chat.request, sender: 'user', type: "send" }])
                     setMessages(prev => [...prev, { text: chat.response, sender: 'user', type: "receive", id: "notloading" }])
                 })
-            })
-
-
-            customFetchRequest(`user-chats-count?userId=127.0.0.1`, 'GET').then((res) => {
-                console.log(res);
-                userChatsCount.value = res.count;
+                setIsLoadingSessionChat(false);
             })
         }
     }
 
     const handleShowAuthModal = () => {
         showAuthModal.value = true;
+    }
+
+    const initRequests = () => {
+        customFetchRequest(`user-chats-count`, 'GET').then((res) => {
+            console.log(res);
+            userChatsCount.value = res.count;
+        })
     }
 
 
@@ -99,9 +103,10 @@ const ChatScreen = () => {
     //     })
     // }
 
-    // useEffect(() => {
-    //     getLoggedInUser()
-    // }, [])
+    useEffect(() => {
+        // getLoggedInUser()
+        initRequests();
+    }, [])
 
     useEffect(() => {
         getSessionChats()
@@ -140,7 +145,7 @@ const ChatScreen = () => {
                         <div className="mb-4 overflow-y-auto h-5/6 px-2 sm:px-20 py-2 flex flex-col" id='message_container'>
 
                             {
-                                messages.length === 0 && isShowWelcomeMessage
+                                messages.length === 0 && isShowWelcomeMessage && !isLoadingSessionChat
                                     ?
                                     <div className="w-full h-full flex flex-col items-center justify-center">
                                         <img src={require("../assets/chat.png")} alt="" className='h-60 w-96 object-contain' />
@@ -153,6 +158,28 @@ const ChatScreen = () => {
                                                 null
                                         }
 
+                                    </div>
+                                    :
+                                    null
+                            }
+
+                            {
+                                isLoadingSessionChat
+                                    ?
+                                    <div className="h-full w-full flex items-center justify-center">
+                                        <RotatingLines
+                                            visible={true}
+                                            height="96"
+                                            width="96"
+                                            color="teal"
+                                            strokeWidth="5"
+                                            strokeColor="teal"
+                                            animationDuration="0.75"
+                                            ariaLabel="rotating-lines-loading"
+                                            wrapperStyle={{}}
+                                            wrapperClass=""
+                                            className="self-center"
+                                        />
                                     </div>
                                     :
                                     null

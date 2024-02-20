@@ -12,7 +12,7 @@ export default function ChatLimtExhausted() {
             <div className={`ml-12 text-gray-800 text-center`}>
                 Oops! you have exhaused chat limit. To chat more visit our android application.
             </div>
-            <a href="#" className="bg-[#26c6da] rounded p-2 mt-2 mb-3 text-white text-sm text-center self-center  block">Visit Application</a>
+            <a href="https://play.google.com/store/apps/details?id=arivihan.technologies.doubtbuzzter2&hl=en_NZ" target='_blank' className="bg-[#26c6da] rounded p-2 mt-2 mb-3 text-white text-sm text-center self-center  block">Visit Application</a>
         </div>
 
     )

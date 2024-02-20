@@ -1,9 +1,10 @@
+import { auth } from "../firebase"
 
 function customFetchRequest(path, method = "POST", body = {}) {
 
     let headers = {
-        "token": localStorage.getItem("token"),
-        "userId": localStorage.getItem('id')
+        "token": localStorage.getItem("token") ?? "",
+        "userId": localStorage.getItem('id') ?? ""
     }
 
     let options = {
@@ -16,7 +17,17 @@ function customFetchRequest(path, method = "POST", body = {}) {
     }
 
     return fetch(`/secure/web/${path}`, options)
-        .then(res => res.json())
+        .then(res => {
+            if(res.status === 200){
+                return res.json()
+            }else if(res.status === 401){
+                if (auth.currentUser !== null) {
+                    auth.currentUser.getIdToken(true).then((res) => {
+                        localStorage.setItem('token', res)
+                    })
+                }
+            }
+        })
         .then(json => {
             return json
         })

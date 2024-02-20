@@ -4,6 +4,7 @@ import {v4} from 'uuid';
 export const chatIsWaitingForResponse = signal(false);
 export const chatLoadingMessageId = signal("");
 export const chatReceiveChatMessage = signal(null);
+export const subscriptionActive = signal(false);
 export const chatClear = signal(false);
 export const chatSessionId = signal(v4());
 export const showAuthModal = signal(false);

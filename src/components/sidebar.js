@@ -3,7 +3,7 @@ import { useSignals } from '@preact/signals-react/runtime';
 import React, { useEffect, useState } from 'react';
 import { getAuth, COnfirm, signInWithPhoneNumber, RecaptchaVerifier, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../firebase';
-import { chatClear, chatSessionId, chatSessions, isGuestUser, loggedInUser, showAuthModal } from '../state/chatState';
+import { chatClear, chatSessionId, chatSessions, isGuestUser, loggedInUser, showAuthModal, subscriptionActive } from '../state/chatState';
 import { v4 } from 'uuid';
 import { customFetchRequest } from '../utils/customRequest';
 
@@ -29,16 +29,15 @@ const Sidebar = ({ onCreateNewChat }) => {
     }
 
     const getUser = () => {
-        if (auth.currentUser !== null) {
-            auth.currentUser.getIdToken(true).then((res) => {
-                localStorage.setItem('token', res)
+        if (localStorage.getItem("token")) {
+
+            customFetchRequest('login').then((res) => {
+                loggedInUser.value = res.body;
+                isGuestUser.value = false;
+                subscriptionActive.value = res.body.subscriptionActive;
+                localStorage.setItem('id', res.body.id)
             })
         }
-        customFetchRequest('login').then((res) => {
-            loggedInUser.value = res;
-            isGuestUser.value = false;
-            localStorage.setItem('id', res.id)
-        })
         customFetchRequest(`chat-sessions`, 'GET').then((res) => {
             chatSessions.value = res;
         })
@@ -48,6 +47,8 @@ const Sidebar = ({ onCreateNewChat }) => {
         isGuestUser.value = true;
         loggedInUser.value = null;
         setIsShowActionsCard(!isShowActionsCard);
+        localStorage.clear();
+        window.location.reload();
     }
 
 
@@ -80,13 +81,13 @@ const Sidebar = ({ onCreateNewChat }) => {
                                 ?
                                 null
                                 :
-                                chatSessions.value.map((chat, index) => (
-                                    <div key={index} className="my-1 hover:bg-white/20 rounded p-2 cursor-pointer flex items-center" onClick={() => onSelectChat(Object.keys(chat))}>
-                                        <span className="">{Object.values(chat)}</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ml-auto">
+                                Object.keys(chatSessions.value).map((key, index) => (
+                                    <div key={index} className="my-1 hover:bg-white/20 rounded p-2 cursor-pointer flex items-center" onClick={() => onSelectChat(key)}>
+                                        <span className="">{chatSessions.value[key]}</span>
+                                        {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ml-auto">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ml-2">
+                                        </svg> */}
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 ml-auto">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
                                         </svg>
                                     </div>

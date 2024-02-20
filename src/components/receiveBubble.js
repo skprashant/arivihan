@@ -17,7 +17,7 @@ export const ReceiveBubble = (props) => {
         setTimeout(() => {
             setText(text + msg[msg.length - counter])
             setCounter(counter - 1)
-        }, 20)
+        }, 10)
 
         document.getElementById("message_container").scrollBy({ top: 600, behavior: "smooth" })
 
