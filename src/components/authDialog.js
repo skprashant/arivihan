@@ -4,6 +4,7 @@ import { auth } from '../firebase';
 import { ThreeDots } from 'react-loader-spinner';
 import { showAuthModal } from '../state/chatState';
 import { effect } from '@preact/signals-react';
+import { customFetchRequest } from '../utils/customRequest';
 
 
 export default function AuthDialog() {
@@ -63,18 +64,12 @@ export default function AuthDialog() {
     }
 
     const getUser = () => {
-        fetch(`/secure/web/login`, {
-            method: "POST",
-            headers: {
-                "token": localStorage.getItem('token'),
-            }
+
+        customFetchRequest("login", 'POST').then(() => {
+            showAuthModal.value = false;
+            window.location.reload();
         })
-            .then(res => res.json())
-            .then(json => {
-                showAuthModal.value = false;
-                window.location.reload();
-                // localStorage.setItem("user", JSON.stringify(json))
-            })
+
     }
 
     const handleLogin = () => {
@@ -107,25 +102,27 @@ export default function AuthDialog() {
                 </div>
 
                 <div className="flex flex-col">
-                    <div className="bg-[#26c6da] flex items-center justify-center rounded-lg">
-                        <img src="https://arivihan.com/wp-content/uploads/2023/05/cropped-arivihan-logo-1.png" alt="" className='h-20 w-64 object-contain self-center' />
-
+                    <div className="flex items-center justify-center rounded-lg">
+                        <img src={require("../assets/logo-full.png")} alt="" className='h-20 object-contain self-center' />
                     </div>
-                    <h2 className='text-3xl font-bold mt-2 ml-1'>Login</h2>
-                    <p className='ml-1 mt-2 mb-1'>Enter your phone number to login</p>
-                    <input type="tel" maxLength={10} onChange={(e) => { setPhoneNumber(e.target.value) }} className='border-2 py-2 px-2 rounded-lg  outline-none hover:border-gray-300' placeholder='Phone Number' />
+                    <hr className='my-4' />
+                    <h2 className='text-2xl font-bold ml-1'>Login</h2>
+                    <p className='ml-1 mt-2 mb-2 text-xs text-gray-500'>Enter your phone number to login</p>
+                    <input type="tel" maxLength={10} onChange={(e) => { setPhoneNumber(e.target.value) }} className='border py-2 px-2 rounded-lg  outline-none hover:border-gray-300' placeholder='Phone Number' />
 
                     {
                         isOTPSent
                             ?
                             <div className="flex flex-col mt-2">
-                                <label htmlFor="" className='ml-1'>Enter OTP</label>
-                                <input onChange={(e) => { setOtp(e.target.value) }} maxLength={6} type="text" className='border-2 py-2 px-2 rounded-lg outline-none hover:border-gray-300' placeholder='Enter OTP' />
+                                <label htmlFor="" className='ml-1 text-xs text-gray-500 mb-2'>Enter OTP</label>
+                                <input onChange={(e) => { setOtp(e.target.value) }} maxLength={6} type="text" className='border py-2 px-2 rounded-lg outline-none hover:border-gray-300' placeholder='Enter OTP' />
                             </div>
                             : null
                     }
 
-                    <button onClick={handleLogin} className='p-2 bg-[#26c6da] text-white rounded-lg mt-2 font-bold flex justify-center'>
+                    <hr className='my-6' />
+
+                    <button onClick={handleLogin} className='px-6 py-2 bg-[#26c6da] text-white rounded-lg ml-auto font-bold flex justify-center'>
 
                         {
                             isLoading

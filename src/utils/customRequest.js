@@ -4,7 +4,7 @@ function customFetchRequest(path, method = "POST", body = {}) {
 
     let headers = {
         "token": localStorage.getItem("token") ?? "",
-        "userId": localStorage.getItem('id') ?? ""
+        "userId": localStorage.getItem('id') ?? "",
     }
 
     let options = {
@@ -16,7 +16,7 @@ function customFetchRequest(path, method = "POST", body = {}) {
         options['body'] = body
     }
 
-    return fetch(`/secure/web/${path}`, options)
+    return fetch(`https://platform-dev.arivihan.com/arivihan-platform/secure/web/${path}`, options)
         .then(res => {
             if(res.status === 200){
                 return res.json()
@@ -29,7 +29,7 @@ function customFetchRequest(path, method = "POST", body = {}) {
             }
         })
         .then(json => {
-            return json
+            return json;
         })
 }
 

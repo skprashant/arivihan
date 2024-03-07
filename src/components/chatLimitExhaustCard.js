@@ -7,7 +7,7 @@ export default function ChatLimtExhausted() {
     },[])
 
     return (
-        <div className={`mb-3 bg-gray-200 mt-6 flex flex-col p-2 rounded w-full`}>
+        <div className={`mb-3 bg-[#E8FBFC] mt-6 flex flex-col p-2 rounded w-full`}>
             <img src={require("../assets/chat.png")} className='h-28 object-contain' alt="" />
             <div className={`ml-12 text-gray-800 text-center`}>
                 Oops! you have exhaused chat limit. To chat more visit our android application.

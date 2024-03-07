@@ -50,7 +50,7 @@ export const ReceiveBubble = (props) => {
     }, [chatReceiveChatMessage.value])
 
     return (
-        <div className={`text-right mb-3 bg-gray-200 mr-auto p-2 rounded w-4/5 sm:w-3/5`}>
+        <div className={`text-right mb-3 bg-[#E8FBFC] mr-auto p-2 rounded-lg w-4/5 sm:w-3/5`}>
             <div className="flex items-center">
                 <img src={require("../assets/logo.png")} alt="" className="rounded-full bg-white h-9 w-9 object-contain" />
                 <h4 className='font-bold ml-2 text-lg'>Arivihan Bot</h4>
@@ -72,7 +72,7 @@ export const ReceiveBubble = (props) => {
                     </div>
                     :
                     <div className={`ml-12 text-gray-800 text-start word`} id="typer">
-                        <pre className='text-wrap whitespace-break-spaces'>
+                        <pre className='text-wrap whitespace-break-spaces text-sm'>
                             {text}
                         </pre>
                     </div>

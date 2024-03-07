@@ -12,3 +12,4 @@ export const userChatsCount = signal(0);
 export const isGuestUser = signal(true);
 export const loggedInUser = signal(null);
 export const chatSessions = signal(null);
+export const showSidebarMobile = signal(true);

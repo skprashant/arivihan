@@ -9,10 +9,7 @@ let initialData = {
 
 function App() {
   return (
-    <DataContext.Provider value={initialData}>
-      <ChatScreen />
-
-    </DataContext.Provider>
+    <ChatScreen />
   );
 }
 
