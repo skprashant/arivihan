@@ -103,7 +103,7 @@ export default function AuthDialog() {
 
                 <div className="flex flex-col">
                     <div className="flex items-center justify-center rounded-lg">
-                        <img src={require("../assets/logo-full.png")} alt="" className='h-20 object-contain self-center' />
+                        <img src={require("../assets/logo-full.png")} alt="" className='h-16 object-cover self-center' />
                     </div>
                     <hr className='my-4' />
                     <h2 className='text-2xl font-bold ml-1'>Login</h2>
@@ -122,7 +122,7 @@ export default function AuthDialog() {
 
                     <hr className='my-6' />
 
-                    <button onClick={handleLogin} className='px-6 py-2 bg-[#26c6da] text-white rounded-lg ml-auto font-bold flex justify-center'>
+                    <button onClick={handleLogin} className='px-6 py-2 bg-[#26c6da] text-white rounded-lg ml-auto font-medium flex justify-center'>
 
                         {
                             isLoading
