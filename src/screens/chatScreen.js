@@ -21,11 +21,11 @@ const ChatScreen = () => {
 
     const handleSendMessage = () => {
 
-        if (isGuestUser.value && userChatsCount.value >= 10 && !subscriptionActive.value) {
-            setIsShowExhaustCard(true);
-            setIsShowWelcomeMessage(false);
-            return;
-        }
+        // if (isGuestUser.value && userChatsCount.value >= 10 && !subscriptionActive.value) {
+        //     setIsShowExhaustCard(true);
+        //     setIsShowWelcomeMessage(false);
+        //     return;
+        // }
 
         if (inputText.trim() !== '' && !chatIsWaitingForResponse.value) {
 

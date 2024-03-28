@@ -53,7 +53,7 @@ export const ReceiveBubble = (props) => {
         <div className={`text-right mb-3 bg-[#E8FBFC] mr-auto p-2 rounded-lg w-4/5 sm:w-3/5`}>
             <div className="flex items-center">
                 <img src={require("../assets/logo.png")} alt="" className="rounded-full bg-white h-9 w-9 object-contain" />
-                <h4 className='font-bold ml-2 text-lg'>Arivihan Bot</h4>
+                <h4 className='font-bold ml-2 text-lg'>Instant Guru</h4>
             </div>
             {
                 isLoading
